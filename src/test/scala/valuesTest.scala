@@ -1,7 +1,7 @@
 import org.scalatest._
-import br.unb.cic.ed.immutable
+import ed.immutable
 
-import br.unb.cic.ed.exceptions._
+import ed.exceptions._
 import scala.language.implicitConversions
 
 import types._
