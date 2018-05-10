@@ -9,7 +9,7 @@ import expression.math._
 import value._
 import types.implicitConversionss
 
-class ValueTypeIntTest extends FlatSpec with Matchers {
+class ValueTypesTest extends FlatSpec with Matchers {
     "Value[TypeInt]" should "be able to be initialized with a TypeInt without any exception being thrown" in {
       val valueNeg4: Value[TypeInt] = Value(TypeInt(-4))
       val value0:    Value[TypeInt] = Value(TypeInt(0))
@@ -30,9 +30,7 @@ class ValueTypeIntTest extends FlatSpec with Matchers {
       Value(TypeInt(0)) .eval() should be (Value(TypeInt(0)))
       Value(TypeInt(6)) .eval() should be (Value(TypeInt(6)))
     }
-}
 
-class ValueTypeBoolTest extends FlatSpec with Matchers {
     "Value[TypeBool]" should "be able to be initialized with a TypeBool without any exception being thrown" in {
       val valueFalse: Value[TypeBool] = Value(TypeBool(false))
       val valueTrue:  Value[TypeBool] = Value(TypeBool(true))
@@ -48,9 +46,7 @@ class ValueTypeBoolTest extends FlatSpec with Matchers {
       Value(TypeBool(false)).eval() should be (Value(TypeBool(false)))
       Value(TypeBool(true)) .eval() should be (Value(TypeBool(true)))
     }
-}
-
-class UndefinedValueTest extends FlatSpec with Matchers {
+    
   "UndefinedValue" should "be able to be inputted as a value to any val/var that has a type Value[T <: Type]" in {
     val intValue:  Value[TypeInt]  = UndefinedValue
     val boolValue: Value[TypeBool] = UndefinedValue

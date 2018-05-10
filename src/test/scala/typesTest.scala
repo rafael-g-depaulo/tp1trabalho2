@@ -1,15 +1,10 @@
 import org.scalatest._
-import ed.immutable
 import ed.exceptions._
 
-import scala.language.implicitConversions
-
 import types._
-import expression.math._
 import value._
-import types.implicitConversionss
 
-class TypeIntTest extends FlatSpec with Matchers {
+class TypesTest extends FlatSpec with Matchers {
     "TypeInt" should "be able to be initialized with a Int without any exception being thrown" in {
       val typeIntNeg7 = TypeInt(-7)
       val typeInt0    = TypeInt(0)
@@ -24,10 +19,8 @@ class TypeIntTest extends FlatSpec with Matchers {
       TypeInt(0) () should be (0)
       TypeInt(5) () should be (5)
     }
-}
-
-class TypeBoolTest extends FlatSpec with Matchers {
-    "TypeInt" should "be able to be initialized with a Boolean without any exception being thrown" in {
+    
+    "TypeBool" should "be able to be initialized with a Boolean without any exception being thrown" in {
       val typeBoolFalse = TypeBool(false)
       val typeBoolTrue  = TypeBool(true)
     }
