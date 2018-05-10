@@ -13,7 +13,7 @@ class TypeIntTest extends FlatSpec with Matchers {
     "TypeInt" should "be able to be initialized with a Int without any exception being thrown" in {
       val typeIntNeg7 = TypeInt(-7)
       val typeInt0    = TypeInt(0)
-      val typeInt5    = TypeInt(5)
+      val typeInt5    = TypeInt(5) 
     }
     it should "return the inner Int when calling apply method" in {
       TypeInt(-3).apply() should be (-3)
