@@ -12,5 +12,7 @@ case class DivExpression(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt]) e
   if (rhs.eval() == Value(TypeInt(0)))
     throw NegativeDenomException("Expressao de divisao inicializada com denominador 0")
 
-  def eval(): Value[TypeInt] = Value[TypeInt](TypeInt(lhs.eval().innerValue() / rhs.eval().innerValue()))
+  // def eval(): Value[TypeInt] = Value[TypeInt](TypeInt(lhs.eval().innerValue() / rhs.eval().innerValue()))
+  def eval[T1 >: TypeInt <: Type](): Value[T1] = Value[TypeInt](TypeInt(lhs.eval().innerValue() / rhs.eval().innerValue())).asInstanceOf[Value[T1]]
+
 }
