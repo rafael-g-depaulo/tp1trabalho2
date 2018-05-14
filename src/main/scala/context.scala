@@ -10,9 +10,11 @@ class Context {
   // val stack = new StackImpl[Map[String, Value[Type]]](new LinkedList[Map[String, Value[Type]]])
   var stack = ed.immutable.List[Map[String, Value[Type]]]()
 
-  def newLayer() {
-    stack = new HashTable[String, Value[Type]](500) :: stack
+  def addLayer() {
+    stack = HashTable[String, Value[Type]](500) :: stack
   }
+
+  def layerCount(): Int = stack.size
 
   def removeLayer() {
     if (!stack.isEmpty)
@@ -40,14 +42,17 @@ class Context {
     }
   }
 
+  def setVar(pair: (String, Value[Type])) { setVar(pair._1, pair._2) }
   def setVar(name: String, value: Value[Type]) {
     if (stack.isEmpty)
-      EmptyContextException("Contexto vazio")
-    else
+      throw EmptyContextException("Contexto vazio")
+    else if (stack.head.hasKey(name))
+      throw InvalidVariableName("Variavel de nome repetido criada")
       stack.head.insert(name -> value)
   }
 }
 
+final case class InvalidVariableName(msg: String) extends Exception(msg)
 final case class InexistentVariableName(msg: String) extends Exception(msg)
 final case class StackUnderflowException(msg: String) extends Exception(msg)
 final case class EmptyContextException(msg: String) extends Exception(msg)
