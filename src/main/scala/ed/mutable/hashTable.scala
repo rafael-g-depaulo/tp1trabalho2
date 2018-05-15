@@ -25,16 +25,17 @@ extends Map[A,B] {
   // a função de hash original, que pode levar a qualquer Int
   private var hashFoo: (A) => Int = (_: A).hashCode
   // a função de hash usada, que leva até qualquer inteiro entre 0 e maxSize -1
-  protected def hashFunc: (A) => Int = hashFoo(_) % maxSize
+  protected def hashFunc: (A) => Int = (a: A) => math.abs(hashFoo(a) % maxSize)
   
   // Array que guarda todos os pares Chave/Valor da HashTable, cada indice da HashTable contendo uma Lista de Pares
   val values = Array.fill[immutable.List[Pair[A, B]]](maxSize) {immutable.EmptyList}
 
   // a função que insere pares Chave/Valor na HashTable
   def insert(pairs: (A, B)*) {
-    for (pair <- pairs) {
-      values(hashFunc(pair._1)) = Pair[A, B](pair._1, pair._2) :: values(hashFunc(pair._1))
-    }
+    if (!pairs.isEmpty)
+      for (pair <- pairs) {
+        values(hashFunc(pair._1)) = Pair[A, B](pair._1, pair._2) :: values(hashFunc(pair._1))
+      }
   }
 
   // retorna a quantidade de pares Chave/Valor que a HashTable tem
