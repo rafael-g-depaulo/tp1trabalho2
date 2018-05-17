@@ -2,9 +2,10 @@ package value
 
 import ed.exceptions._
 import types._
+import context.Context
 import expression.Expression
 
-abstract sealed class Value[+T <: Type] extends Expression[T] {
+abstract sealed class Value[+T <: Type] extends Expression[T](new Context) {
   // def eval[T1 >: T](context: Map[String, Value[Type]]): Value[T1] = this
   def innerValue: T
   def eval[T1 >: T <: Type](): Value[T1] = this

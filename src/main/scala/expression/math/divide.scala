@@ -3,10 +3,12 @@ package math
 
 import types._
 import value._
+import context.Context
 
 final case class NegativeDenomException (msg: String) extends Exception(msg)
 
-case class DivExpression(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt]) extends BinExpression[TypeInt, TypeInt, TypeInt](_lhs, _rhs) {
+case class DivExpression(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt], _context: Context)
+  extends BinExpression[TypeInt, TypeInt, TypeInt](_lhs, _rhs, _context) {
 
   // checa que o denominador não vai ser 0
   if (rhs.eval() == Value(TypeInt(0)))
