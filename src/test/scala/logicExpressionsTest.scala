@@ -16,73 +16,63 @@ class LogicGatesTest extends FlatSpec with Matchers {
     // false && false == false
     AndGate(
       Value(TypeBool(false)),
-      Value(TypeBool(false)),
-      stk
-    ).eval() should be (Value(TypeBool(false)))
+      Value(TypeBool(false))
+    ).eval(stk) should be (Value(TypeBool(false)))
     
     // false && true == false
     AndGate(
       Value(TypeBool(false)),
-      Value(TypeBool(true)),
-      stk
-    ).eval() should be (Value(TypeBool(false)))
+      Value(TypeBool(true))
+    ).eval(stk) should be (Value(TypeBool(false)))
     
     // true && false == false
     AndGate(
       Value(TypeBool(true)),
-      Value(TypeBool(false)),
-      stk
-    ).eval() should be (Value(TypeBool(false)))
+      Value(TypeBool(false))
+    ).eval(stk) should be (Value(TypeBool(false)))
     
     // true && true == true
     AndGate(
       Value(TypeBool(true)),
-      Value(TypeBool(true)),
-      stk
-    ).eval() should be (Value(TypeBool(true)))
+      Value(TypeBool(true))
+    ).eval(stk) should be (Value(TypeBool(true)))
   }
   
   "OR gate" should "work as an OR gate with literal values" in {
     // false || false == false
     OrGate(
       Value(TypeBool(false)),
-      Value(TypeBool(false)),
-      stk
-    ).eval() should be (Value(TypeBool(false)))
+      Value(TypeBool(false))
+    ).eval(stk) should be (Value(TypeBool(false)))
     
     // false || true == true
     OrGate(
       Value(TypeBool(false)),
-      Value(TypeBool(true)),
-      stk
-    ).eval() should be (Value(TypeBool(true)))
+      Value(TypeBool(true))
+    ).eval(stk) should be (Value(TypeBool(true)))
     
     // true && false == true
     OrGate(
       Value(TypeBool(true)),
-      Value(TypeBool(false)),
-      stk
-    ).eval() should be (Value(TypeBool(true)))
+      Value(TypeBool(false))
+    ).eval(stk) should be (Value(TypeBool(true)))
     
     // true && true == true
     OrGate(
       Value(TypeBool(true)),
-      Value(TypeBool(true)),
-      stk
-    ).eval() should be (Value(TypeBool(true)))
+      Value(TypeBool(true))
+    ).eval(stk) should be (Value(TypeBool(true)))
   }
   
   "NOT gate" should "work as a NOT gate" in {
     // !false == true
     NotGate(
-      Value(TypeBool(false)),
-      stk
-    ).eval() should be (Value(TypeBool(true)))
+      Value(TypeBool(false))
+    ).eval(stk) should be (Value(TypeBool(true)))
     
     // !true == false
     NotGate(
-      Value(TypeBool(true)),
-      stk
-    ).eval() should be (Value(TypeBool(false)))
+      Value(TypeBool(true))
+    ).eval(stk) should be (Value(TypeBool(false)))
   }
 }
