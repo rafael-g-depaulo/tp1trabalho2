@@ -97,12 +97,12 @@ class MathExpressionsTest extends FlatSpec with Matchers {
       Value(TypeInt(2))
     ).eval(stk) should be (Value(TypeInt(-2)))
   }
-  it should "throw a NegativeDenomException() when initializing a DivExpression with a denominator of 0" in {
+  it should "throw a NegativeDenomException() when evaluating a DivExpression with a denominator of 0" in {
     intercept[NegativeDenomException] {
       DivExpression(
         Value(TypeInt(1)),
         Value(TypeInt(0))
-      )
+      ).eval(stk)
     }
   }
   
