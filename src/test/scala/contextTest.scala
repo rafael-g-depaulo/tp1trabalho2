@@ -114,7 +114,7 @@ class ContextTest extends FlatSpec with Matchers {
     intercept[InexistentVariableName] {
       context.getVar("x")
     }
-    SetVariable("x", Value(TypeInt(5)), context).execute()
+    SetVariable("x", Value(TypeInt(5))).execute(context)
     
     // a expressão GetVarValue deve jogar uma exceção se avaliada em um contexto sem a variável
     intercept[InexistentVariableName] {
