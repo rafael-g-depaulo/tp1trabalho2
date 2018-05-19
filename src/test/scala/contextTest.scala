@@ -4,6 +4,8 @@ import ed.exceptions._
 import types._
 import value._
 import context._
+import expression._
+import command._
 
 class ContextTest extends FlatSpec with Matchers {
   "the Context" should "be able to have new layers added onto it" in {
@@ -102,5 +104,26 @@ class ContextTest extends FlatSpec with Matchers {
     context.setVar("myBoolean" -> Value(TypeBool(false)))
 
     context.getVar("myBoolean") should be (Value(TypeBool(false)))
+  }
+
+  it should "work with the GetVarValue Expression and SetVariable Command" in {
+    val context = new Context
+    context.addLayer
+
+    // checando que a variável não existia antes
+    intercept[InexistentVariableName] {
+      context.getVar("x")
+    }
+    SetVariable("x", Value(TypeInt(5)), context).execute()
+    
+    // a expressão GetVarValue deve jogar uma exceção se avaliada em um contexto sem a variável
+    intercept[InexistentVariableName] {
+      val ctx = new Context
+      ctx.addLayer
+      GetVarValue("x").eval(ctx)
+    }
+
+    // usando o contexto que contém uma variavel com o mesmo nome, o valor correto é retornado ao avaliar a Expressão
+    GetVarValue("x").eval(context) should be (Value(TypeInt(5)))
   }
 }
