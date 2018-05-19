@@ -1,6 +1,6 @@
 package types
 
-abstract class Type
+abstract sealed class Type
 import scala.language.implicitConversions
 
 class TypeUndef extends Type

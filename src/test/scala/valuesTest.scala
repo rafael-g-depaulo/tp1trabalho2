@@ -7,9 +7,13 @@ import scala.language.implicitConversions
 import types._
 import expression.math._
 import value._
+import context.Context
 import types.implicitConversionss
 
 class ValueTypesTest extends FlatSpec with Matchers {
+
+    val stk = new Context
+
     "Value[TypeInt]" should "be able to be initialized with a TypeInt without any exception being thrown" in {
       val valueNeg4: Value[TypeInt] = Value(TypeInt(-4))
       val value0:    Value[TypeInt] = Value(TypeInt(0))
@@ -26,9 +30,9 @@ class ValueTypesTest extends FlatSpec with Matchers {
     }
     it should "return itself when calling eval() method" in {
       
-      Value(TypeInt(-4)).eval() should be (Value(TypeInt(-4)))
-      Value(TypeInt(0)) .eval() should be (Value(TypeInt(0)))
-      Value(TypeInt(6)) .eval() should be (Value(TypeInt(6)))
+      Value(TypeInt(-4)).eval(stk) should be (Value(TypeInt(-4)))
+      Value(TypeInt(0)) .eval(stk) should be (Value(TypeInt(0)))
+      Value(TypeInt(6)) .eval(stk) should be (Value(TypeInt(6)))
     }
 
     "Value[TypeBool]" should "be able to be initialized with a TypeBool without any exception being thrown" in {
@@ -43,8 +47,8 @@ class ValueTypesTest extends FlatSpec with Matchers {
       Value(TypeBool(true)) .innerValue() should be (true)
     }
     it should "return itself when calling eval() method" in {
-      Value(TypeBool(false)).eval() should be (Value(TypeBool(false)))
-      Value(TypeBool(true)) .eval() should be (Value(TypeBool(true)))
+      Value(TypeBool(false)).eval(stk) should be (Value(TypeBool(false)))
+      Value(TypeBool(true)) .eval(stk) should be (Value(TypeBool(true)))
     }
     
   "UndefinedValue" should "be able to be inputted as a value to any val/var that has a type Value[T <: Type]" in {
@@ -81,11 +85,11 @@ class ValueTypesTest extends FlatSpec with Matchers {
     }
 
     intercept[AccessingUndefinedException] {
-      intValue.eval()
+      intValue.eval(stk)
     }
 
     intercept[AccessingUndefinedException] {
-      boolValue.eval()
+      boolValue.eval(stk)
     }
   }
 }
