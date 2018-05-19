@@ -7,7 +7,6 @@ import value._
 import types._
 
 class Context {
-  // val stack = new StackImpl[Map[String, Value[Type]]](new LinkedList[Map[String, Value[Type]]])
   var stack = ed.immutable.List[Map[String, Value[Type]]]()
 
   def addLayer() {
