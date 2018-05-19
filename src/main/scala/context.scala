@@ -47,7 +47,12 @@ class Context {
       throw EmptyContextException("Contexto vazio")
     else if (stack.head.hasKey(name))
       throw InvalidVariableName("Variavel de nome repetido criada")
+    else
       stack.head.insert(name -> value)
+  }
+
+  def clear {
+    while (!stack.isEmpty) removeLayer
   }
 }
 
