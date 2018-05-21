@@ -5,7 +5,7 @@ import expression._
 import types._
 import value._
 
-case class IfThen(
+class IfThen(
   private val cond: Expression[TypeBool],
   private val blc: Block) extends Command {
 
@@ -16,4 +16,8 @@ case class IfThen(
       ctx.removeLayer
     }
   }
+}
+
+object IfThen {
+  def apply(cond: Expression[TypeBool], blc: Block): IfThen = new IfThen(cond, blc)
 }

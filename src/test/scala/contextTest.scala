@@ -44,16 +44,19 @@ class ContextTest extends FlatSpec with Matchers {
       context.removeLayer            
     }
   }
-  it should "throw a EmptyContextException when setting a variable in an empty context" in {
+  it should "throw a EmptyContextException when creating a variable in an empty context" in {
     val context = new Context
     context.stack.isEmpty should be (true)
     intercept[EmptyContextException] {
-      context.setVar("x", Value(TypeInt(4)))
+      context.createVar("x", Value(TypeInt(4)))
     } 
   }
-  it should "be able to have variables set to and got from the top layer" in {
+  it should "be able to have variables created, set to and got from the top layer" in {
     val context = new Context
     context.addLayer
+
+    context.createVar[TypeInt]("intVar", UndefinedValue)
+    context.createVar("boolVar" -> Value(TypeBool(false)))
 
     context.setVar("intVar", Value(TypeInt(4)))
     context.setVar("boolVar" -> Value(TypeBool(true)))
@@ -65,14 +68,14 @@ class ContextTest extends FlatSpec with Matchers {
     val context = new Context
     context.addLayer
 
-    context.setVar("undefined", UndefinedValue)
+    context.createVar("undefined", UndefinedValue)
     context.getVar("undefined") should be (UndefinedValue)
   }
   it should "throw InexistentVariable exception when trying to use getVar method with a string that doesn't correspond to any variable names" in {
     val context = new Context
     context.addLayer
 
-    context.setVar("5" -> Value(TypeInt(5)))
+    context.createVar("5" -> Value(TypeInt(5)))
 
     intercept[InexistentVariable] {
       context.getVar("4")
@@ -82,32 +85,32 @@ class ContextTest extends FlatSpec with Matchers {
     val context = new Context
     context.addLayer
 
-    context.setVar("intVar" -> Value(TypeInt(5)))
+    context.createVar("intVar" -> Value(TypeInt(5)))
     context.addLayer
     context.addLayer
 
     context.getVar("intVar") should be (Value(TypeInt(5)))
 
   }
-  it should "throw a InvalidVariableName exception when setting 2 variables in the same layer with the same name" in {
+  it should "throw a InvalidVariableName exception when creating 2 variables in the same layer with the same name" in {
     val context = new Context
     context.addLayer
-    context.setVar("myVar" -> Value(TypeBool(true)))
+    context.createVar("myVar" -> Value(TypeBool(true)))
     intercept[InvalidVariableName] {
-      context.setVar("myVar" -> Value(TypeBool(true)))
+      context.createVar("myVar" -> Value(TypeBool(true)))
     }
   }
   it should "return the newest layer's variable when searching for a variable whose name is shared with another variable in a deeper layer" in {
     val context = new Context
     context.addLayer
-    context.setVar("myBoolean" -> Value(TypeBool(true)))
+    context.createVar("myBoolean" -> Value(TypeBool(true)))
     context.addLayer
-    context.setVar("myBoolean" -> Value(TypeBool(false)))
+    context.createVar("myBoolean" -> Value(TypeBool(false)))
 
     context.getVar("myBoolean") should be (Value(TypeBool(false)))
   }
 
-  it should "work with the GetVarValue Expression and SetVariable Command" in {
+  it should "work with the GetVarValue Expression, and the CreateVariable and SetVariable Commands" in {
     val context = new Context
     context.addLayer
 
@@ -115,7 +118,7 @@ class ContextTest extends FlatSpec with Matchers {
     intercept[InexistentVariable] {
       context.getVar("x")
     }
-    SetVariable("x", Value(TypeInt(5))).execute(context)
+    CreateVariable("x", Value(TypeInt(5))).execute(context)
     
     // a expressão GetVarValue deve jogar uma exceção se avaliada em um contexto sem a variável
     intercept[InexistentVariable] {
@@ -126,5 +129,9 @@ class ContextTest extends FlatSpec with Matchers {
 
     // usando o contexto que contém uma variavel com o mesmo nome, o valor correto é retornado ao avaliar a Expressão
     GetVarValue("x").eval(context) should be (Value(TypeInt(5)))
+
+    // e mesmo estando em outra camada, podemos alterar o valor de x
+    SetVariable("x" -> Value(TypeInt(10))).execute(context)
+    GetVarValue("x").eval(context) should be (Value(TypeInt(10)))
   }
 }

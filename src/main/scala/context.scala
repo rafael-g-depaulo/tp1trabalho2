@@ -42,8 +42,8 @@ class Context {
     }
   }
 
-  def setVar(pair: (String, Value[Type])) { setVar(pair._1, pair._2) }
-  def setVar(name: String, value: Value[Type]) {
+  def createVar[T <: Type](pair: (String, Value[T])) { createVar(pair._1, pair._2) }
+  def createVar[T <: Type](name: String, value: Value[T] = UndefinedValue) {
     if (stack.isEmpty)
       throw EmptyContextException("Contexto vazio")
     else if (stack.head.hasKey(name))
@@ -52,7 +52,29 @@ class Context {
       stack.head.insert(name -> value)
   }
 
-  def clear {
+  def setVar(pair: (String, Value[Type])) { setVar(pair._1, pair._2) }
+  def setVar(name: String, value: Value[Type]) {
+    if (stack.isEmpty)
+      throw EmptyContextException("Contexto vazio")
+    
+    // checa no stack inteiro pra achar a variável
+    val myIte = stack.getIterator
+    while (myIte.hasNext) {
+      if (myIte.value.hasKey(name)) {
+        myIte.value.insert(name -> value)
+        return
+      }
+      else myIte.next()
+    }
+
+    if (myIte.value.hasKey(name))
+      myIte.value.insert(name -> value)
+    // checou no stack inteiro e não achou.
+    else
+      throw InexistentVariable("tentando mudar valor de variável não criada")
+  }
+  
+  def clear() {
     while (!stack.isEmpty) removeLayer
   }
 }

@@ -5,7 +5,7 @@ import expression._
 import types._
 import value._
 
-case class IfThenElse(
+class IfThenElse(
   private val cond: Expression[TypeBool],
   private val blcIf: Block,
   private val blcElse: Block) extends Command {
@@ -18,4 +18,8 @@ case class IfThenElse(
       blcElse.execute(ctx)
     ctx.removeLayer
   }
+}
+
+object IfThenElse {
+  def apply(cond: Expression[TypeBool], blc: Block, blcElse: Block): IfThenElse = new IfThenElse(cond, blc, blcElse)
 }

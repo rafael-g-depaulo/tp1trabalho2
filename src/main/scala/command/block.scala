@@ -4,6 +4,6 @@ import context.Context
 import ed._
 
 case class Block(cmds: Command*) {
-  private val commands = immutable.List[Command](cmds: _*)
+  val commands = immutable.List[Command](cmds: _*)
   def execute(context: Context) { commands foreach { _.execute(context) } }
 }
