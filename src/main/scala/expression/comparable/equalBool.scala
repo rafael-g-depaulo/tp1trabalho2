@@ -11,8 +11,10 @@ import context.Context
  * @author Lucas V. M. Pinheiro
  */
 
-case class EqualBool(_lhs: Expression[TypeBool], _rhs: Expression[TypeBool]) extends BinExpression[TypeBool, TypeBool, TypeBool](_lhs, _rhs) {
-
+class EqualBool(_lhs: Expression[TypeBool], _rhs: Expression[TypeBool]) extends BinExpression[TypeBool, TypeBool, TypeBool](_lhs, _rhs) {
 	def eval[T1 >: TypeBool <: Type](ctx: Context): Value [T1] = Value[TypeBool](TypeBool(lhs.eval(ctx).innerValue() == rhs.eval(ctx).innerValue())).asInstanceOf[Value [T1]]
+}
 
+object EqualBool {
+	def apply(lhs: Expression[TypeBool], rhs: Expression[TypeBool]): EqualBool = new EqualBool(lhs, rhs)
 }

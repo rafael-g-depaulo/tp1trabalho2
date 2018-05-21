@@ -5,6 +5,10 @@ import context.Context
 import value.Value
 import ed.mutable._
 
-case class GetVarValue[+T <: Type](val varName: String) extends Expression[T] {
+class GetVarValue[+T <: Type](val varName: String) extends Expression[T] {
     def eval[T1 >: T <: Type](context: Context): Value[T1] = context.getVar(varName).asInstanceOf[Value[T1]]
+}
+
+object GetVarValue {
+    def apply[T <: Type](varName: String): GetVarValue[T] = new GetVarValue[T](varName)
 }

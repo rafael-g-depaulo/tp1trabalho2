@@ -11,8 +11,10 @@ import context.Context
  * @author Lucas V. M. Pinheiro
  */
 
-case class LessEqual(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt]) extends BinExpression[TypeBool, TypeInt, TypeInt](_lhs, _rhs) {
-
+class LessEqual(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt]) extends BinExpression[TypeBool, TypeInt, TypeInt](_lhs, _rhs) {
 	def eval[T1 >: TypeBool <: Type](ctx: Context): Value[T1] = Value[TypeBool](TypeBool(lhs.eval(ctx).innerValue() <= rhs.eval(ctx).innerValue())).asInstanceOf[Value[T1]]
+}
 
+object LessEqual {
+	def apply(lhs: Expression[TypeInt], rhs: Expression[TypeInt]): LessEqual = new LessEqual(lhs, rhs)
 }

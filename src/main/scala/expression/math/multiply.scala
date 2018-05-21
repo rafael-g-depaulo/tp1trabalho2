@@ -5,9 +5,12 @@ import types._
 import value._
 import context.Context
 
-case class MultExpression(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt])
+class MultExpression(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt])
   extends BinExpression[TypeInt, TypeInt, TypeInt](_lhs, _rhs) {
   def eval[T1 >: TypeInt <: Type](context: Context): Value[T1] =
     Value[TypeInt](TypeInt(lhs.eval(context).innerValue() * rhs.eval(context).innerValue())).asInstanceOf[Value[T1]]
+}
 
+object MultExpression {
+  def apply(lhs: Expression[TypeInt], rhs: Expression[TypeInt]): MultExpression = new MultExpression(lhs, rhs)
 }

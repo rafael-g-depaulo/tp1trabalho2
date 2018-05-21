@@ -6,7 +6,7 @@ import value._
 import context.Context
 import exceptions._
 
-case class DivExpression(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt])
+class DivExpression(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt])
   extends BinExpression[TypeInt, TypeInt, TypeInt](_lhs, _rhs) {
 
   def eval[T1 >: TypeInt <: Type](context: Context): Value[T1] = {
@@ -16,5 +16,8 @@ case class DivExpression(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt])
     else
       Value[TypeInt](TypeInt(lhs.eval(context).innerValue() / rhsEval.innerValue())).asInstanceOf[Value[T1]]
   }
+}
 
+object DivExpression {
+  def apply(lhs: Expression[TypeInt], rhs: Expression[TypeInt]): DivExpression = new DivExpression(lhs, rhs)
 }

@@ -11,9 +11,11 @@ import context.Context
  * @author Lucas V. M. Pinheiro
  */
 
-case class GreaterEqual																																																																																																																																																																																																																																																																														(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt]) extends BinExpression[TypeBool, TypeInt, TypeInt](_lhs, _rhs) {
-
+class GreaterEqual (_lhs: Expression[TypeInt], _rhs: Expression[TypeInt]) extends BinExpression[TypeBool, TypeInt, TypeInt](_lhs, _rhs) {
 	def eval[T1 >: TypeBool <: Type](ctx: Context): Value [T1] = 
-Value[TypeBool](TypeBool(lhs.eval(ctx).innerValue() >= rhs.eval(ctx).innerValue())).asInstanceOf[Value [T1]]
+		Value[TypeBool](TypeBool(lhs.eval(ctx).innerValue() >= rhs.eval(ctx).innerValue())).asInstanceOf[Value [T1]]
+}
 
+object GreaterEqual {
+	def apply(lhs: Expression[TypeInt], rhs: Expression[TypeInt]): GreaterEqual = new GreaterEqual(lhs, rhs)
 }

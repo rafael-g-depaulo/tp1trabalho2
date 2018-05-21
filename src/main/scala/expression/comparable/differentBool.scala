@@ -12,7 +12,9 @@ import context.Context
  */
 
 case class DifferentBool(_lhs: Expression[TypeBool], _rhs: Expression[TypeBool]) extends BinExpression[TypeBool, TypeBool, TypeBool](_lhs, _rhs) {
-
 	def eval[T1 >: TypeBool <: Type](ctx: Context): Value [T1] = Value[TypeBool](TypeBool(lhs.eval(ctx).innerValue() != rhs.eval(ctx).innerValue())).asInstanceOf[Value [T1]]
+}
 
+object DifferentBool {
+	def apply(lhs: Expression[TypeBool], rhs: Expression[TypeBool]): DifferentBool = new DifferentBool(lhs, rhs)
 }
