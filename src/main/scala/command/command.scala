@@ -2,6 +2,6 @@ package command
 
 import context.Context
 
-abstract class Command(private val context: Context) {
-  def execute(): Unit
+abstract class Command() {
+  def execute(ctx: Context): Unit
 }

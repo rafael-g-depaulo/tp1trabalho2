@@ -5,15 +5,14 @@ import expression._
 import types._
 import value._
 
-class IfThen(
-  private val ctx: Context,
+case class IfThen(
   private val cond: Expression[TypeBool],
-  private val blc: Block) extends Command(ctx) {
+  private val blc: Block) extends Command {
 
-  def execute() {
+  def execute(ctx: Context) {
     if (cond.eval(ctx) == Value(TypeBool(true))) {
       ctx.addLayer
-      blc.execute
+      blc.execute(ctx)
       ctx.removeLayer
     }
   }

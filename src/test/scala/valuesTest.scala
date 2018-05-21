@@ -1,12 +1,13 @@
-import org.scalatest._
+import org.scalatest.{exceptions => _, _}
 import ed.immutable
 
 import ed.exceptions._
 import scala.language.implicitConversions
 
 import types._
-import expression.math._
 import value._
+import exceptions._
+import expression.math._
 import context.Context
 import types.implicitConversionss
 
