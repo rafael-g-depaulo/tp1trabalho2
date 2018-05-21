@@ -6,7 +6,6 @@ import scala.language.implicitConversions
 
 import types._
 import value._
-import exceptions._
 import expression.math._
 import context.Context
 import types.implicitConversionss

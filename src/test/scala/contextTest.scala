@@ -4,7 +4,7 @@ import ed.exceptions._
 import types._
 import value._
 import context._
-import exceptions._
+import exceptions.InexistentVariable
 import expression._
 import command._
 

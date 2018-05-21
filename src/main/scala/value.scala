@@ -1,9 +1,9 @@
 package value
 
 import ed.exceptions._
-import exceptions._
 import types._
 import context.Context
+import exceptions._
 import expression.Expression
 
 abstract sealed class Value[+T <: Type] extends Expression[T]() {
