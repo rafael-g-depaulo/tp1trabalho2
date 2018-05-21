@@ -1,9 +1,10 @@
-import org.scalatest._
+import org.scalatest.{exceptions => _, _}
 import ed.exceptions._
 
 import types._
 import value._
 import context._
+import exceptions._
 import expression._
 import command._
 
@@ -67,13 +68,13 @@ class ContextTest extends FlatSpec with Matchers {
     context.setVar("undefined", UndefinedValue)
     context.getVar("undefined") should be (UndefinedValue)
   }
-  it should "throw InexistentVariableName exception when trying to use getVar method with a string that doesn't correspond to any variable names" in {
+  it should "throw InexistentVariable exception when trying to use getVar method with a string that doesn't correspond to any variable names" in {
     val context = new Context
     context.addLayer
 
     context.setVar("5" -> Value(TypeInt(5)))
 
-    intercept[InexistentVariableName] {
+    intercept[InexistentVariable] {
       context.getVar("4")
     }
   }
@@ -111,13 +112,13 @@ class ContextTest extends FlatSpec with Matchers {
     context.addLayer
 
     // checando que a variável não existia antes
-    intercept[InexistentVariableName] {
+    intercept[InexistentVariable] {
       context.getVar("x")
     }
     SetVariable("x", Value(TypeInt(5))).execute(context)
     
     // a expressão GetVarValue deve jogar uma exceção se avaliada em um contexto sem a variável
-    intercept[InexistentVariableName] {
+    intercept[InexistentVariable] {
       val ctx = new Context
       ctx.addLayer
       GetVarValue("x").eval(ctx)

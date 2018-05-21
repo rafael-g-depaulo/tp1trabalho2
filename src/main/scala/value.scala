@@ -1,6 +1,7 @@
 package value
 
 import ed.exceptions._
+import exceptions._
 import types._
 import context.Context
 import expression.Expression
@@ -24,5 +25,3 @@ case object UndefinedValue extends Value[Nothing] {
   override def innerValue: Nothing                                      = throw AccessingUndefinedException("tentando pegar valor de Undefined") 
   override def eval[T1 >: Nothing <: Type](context: Context): Value[T1] = throw AccessingUndefinedException("tentando avaliar(evaluate) Undefined") 
 }
-
-final case class AccessingUndefinedException(msg: String) extends Exception(msg)

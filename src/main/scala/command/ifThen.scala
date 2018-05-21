@@ -5,7 +5,7 @@ import expression._
 import types._
 import value._
 
-class IfThen(
+case class IfThen(
   private val cond: Expression[TypeBool],
   private val blc: Block) extends Command {
 

@@ -6,10 +6,9 @@ import command._
 import context._
 
 case class Procedure(
-  body: Block,
-  params: (String, Expression[Type])*
+  val body: Block
 ) {
-  def execute(ctx: Context) {
+  def execute(ctx: Context, params: (String, Expression[Type])*) {
     ctx.addLayer()
     // params foreach {
     //   (param: (String, Expression[Type])) => context.setVar(param._1, param._2.eval(context))

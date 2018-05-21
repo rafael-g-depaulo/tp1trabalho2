@@ -3,6 +3,7 @@ package context
 import ed.mutable._
 import ed.immutable._
 import ed.contracts._
+import exceptions._
 import value._
 import types._
 
@@ -36,7 +37,7 @@ class Context {
       // retorna o valor da variável, ou joga uma exceção, se ela não existe
       ite.value.get(varName) match {
         case Some(value) => value
-        case None        => throw InexistentVariableName("Tentando pegar Valor de variavel não existente")
+        case None        => throw InexistentVariable("Tentando pegar Valor de variavel não existente")
       }     
     }
   }
@@ -55,8 +56,3 @@ class Context {
     while (!stack.isEmpty) removeLayer
   }
 }
-
-final case class InvalidVariableName(msg: String) extends Exception(msg)
-final case class InexistentVariableName(msg: String) extends Exception(msg)
-final case class StackUnderflowException(msg: String) extends Exception(msg)
-final case class EmptyContextException(msg: String) extends Exception(msg)
