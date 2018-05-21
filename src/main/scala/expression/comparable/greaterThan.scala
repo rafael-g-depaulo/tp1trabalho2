@@ -3,6 +3,7 @@ package comparable
 
 import value._
 import types._
+import context.Context
 
 /** Implementação da expressão de comparação "maior que".
  * @param 2 expressões de int (Expression[TypeInt])
@@ -12,6 +13,6 @@ import types._
 
 case class GreaterThan(_lhs: Expression[TypeInt], _rhs: Expression[TypeInt]) extends BinExpression[TypeBool, TypeInt, TypeInt](_lhs, _rhs) {
 
-	def eval[T1 >: TypeBool <: Type](): Value [T1] = Value[TypeBool](TypeBool(lhs.eval().innerValue() > rhs.eval().innerValue())).asInstanceOf[Value [T1]]
+	def eval[T1 >: TypeBool <: Type](ctx: Context): Value [T1] = Value[TypeBool](TypeBool(lhs.eval(ctx).innerValue() > rhs.eval(ctx).innerValue())).asInstanceOf[Value [T1]]
 
 }

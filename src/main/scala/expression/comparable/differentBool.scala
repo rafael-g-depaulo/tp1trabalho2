@@ -3,6 +3,7 @@ package comparable
 
 import types._
 import value._
+import context.Context
 
 /** Implementação da expressão de comparação "diferente" para Booleans.
  * @param 2 expressões de bool																																																																																																																														
@@ -12,6 +13,6 @@ import value._
 
 case class DifferentBool(_lhs: Expression[TypeBool], _rhs: Expression[TypeBool]) extends BinExpression[TypeBool, TypeBool, TypeBool](_lhs, _rhs) {
 
-	def eval[T1 >: TypeBool <: Type](): Value [T1] = Value[TypeBool](TypeBool(lhs.eval().innerValue() != rhs.eval().innerValue())).asInstanceOf[Value [T1]]
+	def eval[T1 >: TypeBool <: Type](ctx: Context): Value [T1] = Value[TypeBool](TypeBool(lhs.eval(ctx).innerValue() != rhs.eval(ctx).innerValue())).asInstanceOf[Value [T1]]
 
 }
