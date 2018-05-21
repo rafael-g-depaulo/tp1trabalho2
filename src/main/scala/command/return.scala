@@ -11,6 +11,7 @@ class Return (
   ) extends Command {
   
   override def isReturn() = true
+  override def returnValue(ctx: Context) = retVal.eval(ctx)
 
   def execute(ctx: Context) {
     throw ExecutingReturnException("função não retornou corretamente, ou return executado fora de uma função")

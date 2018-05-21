@@ -12,7 +12,7 @@ class Procedure(
   _paramNames: String*
 ) {
   val paramNames = List(_paramNames: _*)
-  def call(ctx: Context, params: (String, Expression[Type])*) {
+  def call(ctx: Context)(params: (String, Expression[Type])*) {
     ctx.addLayer()
 
     // creating the variables
@@ -40,4 +40,5 @@ class Procedure(
 
 object Procedure {
   def apply(body: Block, paramNames: String*): Procedure = new Procedure(body, paramNames: _*)
+  def apply(paramNames: String*)(body: Block): Procedure = new Procedure(body, paramNames: _*)
 }
