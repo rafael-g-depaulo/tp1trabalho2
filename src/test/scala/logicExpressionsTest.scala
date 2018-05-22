@@ -6,6 +6,7 @@ import types._
 import value._
 import context._
 import expression.logic._
+import expression.comparable._
 
 
 class LogicGatesTest extends FlatSpec with Matchers {
@@ -75,4 +76,16 @@ class LogicGatesTest extends FlatSpec with Matchers {
       Value(TypeBool(true))
     ).eval(stk) should be (Value(TypeBool(false)))
   }
+
+	"XOR gate" should "work as a XOR gate" in {
+		XorGate(
+			Value(TypeBool(true)),
+			EqualInt(Value(TypeInt(2)), Value(TypeInt(3)))
+		).eval(stk) should be (Value(TypeBool(true)))
+	
+		XorGate(
+			LessEqual(Value(TypeInt(3)), Value(TypeInt(5))),
+			Value(TypeBool(true))			
+		).eval(stk) should be (Value(TypeBool(false)))
+	}
 }
