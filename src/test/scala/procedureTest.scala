@@ -75,4 +75,30 @@ class ProcedureTest extends FlatSpec with Matchers {
 
     stk.clear()
   }
+
+  it should "work when created with CreateProcedure Command and called with the CallProcedure Command" in {
+    stk.addLayer()
+    CreateProcedure("xTrueIfNum=5" -> Procedure("number")(
+      Block(
+        IfThenElse(
+          EqualInt(GetVarValue("number"), Value(TypeInt(5))),
+          Block(
+            SetVariable("x" -> Value(TypeBool(true)))
+          ),
+          Block(
+            SetVariable("x" -> Value(TypeBool(false)))
+          )
+        )
+      )
+    )).execute(stk)
+    
+    stk.createVar[TypeBool]("x" -> UndefinedValue)
+    GetVarValue("x").eval(stk) should be (UndefinedValue)
+
+    CallProcedure("xTrueIfNum=5")("number" -> Value(TypeInt(4))).execute(stk)
+    GetVarValue("x").eval(stk) should be (Value(TypeBool(false)))
+    
+    CallProcedure("xTrueIfNum=5")("number" -> Value(TypeInt(5))).execute(stk)
+    GetVarValue("x").eval(stk) should be (Value(TypeBool(true)))
+  }
 }

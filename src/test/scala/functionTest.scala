@@ -114,4 +114,24 @@ class FunctionTest extends FlatSpec with Matchers {
     add5thenDouble.call(stk)("num" -> Value(TypeInt(1))) should be (Value(TypeInt(12)))
     add5thenDouble.call(stk)("num" -> Value(TypeInt(-5))) should be (Value(TypeInt(0)))
   }
+  it should "work when created with the CreateFunction Command, and called with the CallFunction Expression" in {
+    stk.addLayer
+    CreateFunction("add5thenDouble" -> Function("num")(
+      Block (
+        Return(
+          MultExpression(
+            SumExpression(
+              GetVarValue("num"),
+              Value(TypeInt(5))
+            ),
+            Value(TypeInt(2))
+            )
+        )
+      )
+    )).execute(stk)
+
+    CallFunction("add5thenDouble")("num" -> Value(TypeInt(0))) .eval(stk) should be (Value(TypeInt(10)))
+    CallFunction("add5thenDouble")("num" -> Value(TypeInt(1))) .eval(stk) should be (Value(TypeInt(12)))
+    CallFunction("add5thenDouble")("num" -> Value(TypeInt(-5))).eval(stk) should be (Value(TypeInt(0)))
+  }
 }

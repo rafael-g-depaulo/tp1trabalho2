@@ -10,7 +10,6 @@ class CreateVariable(val varName: String, val varValue: Value[Type]) extends Com
   }
 }
 
-
 object CreateVariable {
   def apply(pair: (String, Value[Type])): CreateVariable = new CreateVariable(pair._1, pair._2)
   def apply(varName: String, varValue: Value[Type]): CreateVariable = new CreateVariable(varName, varValue)

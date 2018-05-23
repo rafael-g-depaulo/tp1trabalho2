@@ -4,52 +4,85 @@ import ed.mutable._
 import ed.immutable._
 import ed.contracts._
 import exceptions._
+import procedure._
+import function._
 import value._
 import types._
 
 class Context {
-  var stack = ed.immutable.List[Map[String, Value[Type]]]()
+  var stack      = ed.immutable.List[Map[String, Value[Type]]]()
+  var procdStack = ed.immutable.List[Map[String, Procedure]]()
+  var funcStack  = ed.immutable.List[Map[String, Function]]()
 
   def addLayer() {
-    stack = HashTable[String, Value[Type]](500) :: stack
+    stack      = HashTable[String, Value[Type]](50) :: stack
+    procdStack = HashTable[String, Procedure](50) :: procdStack
+    funcStack  = HashTable[String, Function](50) :: funcStack
   }
 
   def layerCount(): Int = stack.size
 
   def removeLayer() {
-    if (!stack.isEmpty)
-      stack = stack.tail
+    if (!stack.isEmpty) {
+      stack      = stack.tail
+      procdStack = procdStack.tail
+      funcStack  = funcStack.tail
+    }
     else 
       throw StackUnderflowException("Undeflow no Stack de contexto")
   }
 
   def getVar(varName: String): Value[Type] = {
-    // se o stack esta vazio
-    if (stack.isEmpty)
-      throw EmptyContextException("Contexto vazio")
-    else {
-      val ite = stack.getIterator()
-
-      // itera em todas as camadas de contexto até achar a mais interna que contenha uma variável com aquele nome
-      while (!ite.value.hasKey(varName) && ite.hasNext)
-        ite.next()
-
-      // retorna o valor da variável, ou joga uma exceção, se ela não existe
-      ite.value.get(varName) match {
-        case Some(value) => value
-        case None        => throw InexistentVariable("Tentando pegar Valor de variavel não existente")
-      }     
-    }
+    getThing[Value[Type]](varName, stack, "variavel")
   }
+
+  def getFunc(funcName: String): Function    = getThing[Function](funcName, funcStack, "funcao")
+  def getProcd(procdName: String): Procedure = getThing[Procedure](procdName, procdStack, "procedure")
 
   def createVar[T <: Type](pair: (String, Value[T])) { createVar(pair._1, pair._2) }
   def createVar[T <: Type](name: String, value: Value[T] = UndefinedValue) {
-    if (stack.isEmpty)
+    createThing[Value[T]](name, value, stack.asInstanceOf[ed.immutable.List[ed.contracts.Map[String, Value[T]]]], "Variavel")
+  }
+  
+  def createFunc(pair: (String, Function)) { createFunc(pair._1, pair._2) }
+  def createFunc(name: String, func: Function) {
+    createThing[Function](name, func, funcStack, "Funcao")
+  }
+
+  def createProcd(pair: (String, Procedure)) { createProcd(pair._1, pair._2) }
+  def createProcd(name: String, procd: Procedure) {
+    createThing[Procedure](name, procd, procdStack, "Procedure")
+  }
+
+  // funcao privada que coloca alguma coisa no stack correspondente
+  private def createThing[Thing](name: String, thing: Thing, thingStack: ed.immutable.List[Map[String, Thing]], thingTypeName: String) {
+    if (thingStack.isEmpty)
       throw EmptyContextException("Contexto vazio")
-    else if (stack.head.hasKey(name))
-      throw InvalidVariableName("Variavel de nome repetido criada")
+    else if (thingStack.head.hasKey(name))
+      throw InvalidName(thingTypeName+" de nome repetido criada")
     else
-      stack.head.insert(name -> value)
+      thingStack.head.insert(name -> thing)
+  }
+
+  // funcao privada que recupera alguma coisa do stack correspondente
+  private def getThing[Thing](name: String, thingStack: ed.immutable.List[Map[String, Thing]], thingTypeName: String): Thing = {
+    
+    // se o stack esta vazio
+    if (thingStack.isEmpty)
+      throw EmptyContextException("Contexto vazio")
+    else {
+      val ite = thingStack.getIterator()
+
+      // itera em todas as camadas de contexto até achar a mais interna que contenha uma coisa com aquele nome
+      while (!ite.value.hasKey(name) && ite.hasNext)
+        ite.next()
+
+      // retorna o valor da coisa, ou joga uma exceção, se ela não existe
+      ite.value.get(name) match {
+        case Some(value) => value
+        case None        => throw InexistentThing("Tentando pegar valor de "+ thingTypeName +" não existente")
+      }     
+    }
   }
 
   def setVar(pair: (String, Value[Type])) { setVar(pair._1, pair._2) }
@@ -71,7 +104,7 @@ class Context {
       myIte.value.insert(name -> value)
     // checou no stack inteiro e não achou.
     else
-      throw InexistentVariable("tentando mudar valor de variável não criada")
+      throw InexistentThing("tentando mudar valor de variável não criada")
   }
   
   def clear() {

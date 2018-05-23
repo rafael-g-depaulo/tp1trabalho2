@@ -27,7 +27,7 @@ class Function(
       for (param <- params)
         ctx.setVar(param._1, param._2.eval(ctx))
     } catch {
-      case err: InexistentVariable => throw WrongParameterName("parametro inicializado com nome invalido")
+      case err: InexistentThing => throw WrongParameterName("parametro inicializado com nome invalido")
     }
 
     // if there are Undefined parameters, throw exception
