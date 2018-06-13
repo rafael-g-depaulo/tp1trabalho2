@@ -18,6 +18,7 @@ import scala.reflect.runtime.universe.{TypeTag, typeTag, typeOf}
 import scala.reflect.runtime.universe
 
 class Function(
+  val fType: universe.Type,
   val body: Command,
   _params: (String, universe.Type)*
   )
@@ -41,7 +42,7 @@ class Function(
           case Some(tt) => tt match {
           // if type was the same as expected
             case t if t =:= param._2.getExprType => ctx.setVar(param._1, param._2.eval(ctx))// okay
-            case _                         => throw IncompatibleTypeException("Tipo incompativel. Esperava: "+param._2.getExprType+". Recebido: "+tt)
+            case _                         => throw IncompatibleTypeException("Tipo incompativel. Esperava: "+tt+". Recebido: "+param._2.getExprType)
           }
         }
       }
@@ -71,5 +72,5 @@ class Function(
 
 object Function {
   // def apply(body: Command, params: (String, Type)*): Function = new Function(body, params: _*)
-  def apply(params: (String, universe.Type)*)(body: Command): Function = new Function(body, params: _*)
+  def apply(fType: universe.Type)(params: (String, universe.Type)*)(body: Command): Function = new Function(fType, body, params: _*)
 }

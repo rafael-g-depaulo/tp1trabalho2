@@ -18,7 +18,7 @@ class FunctionTest extends FlatSpec with Matchers {
    val stk: Context = new Context
 
   "Function" should "be able to be created" in {
-    val add5thenDouble = Function("num" -> TypeInt.getType)(
+    val add5thenDouble = Function(TypeInt.getType)("num" -> TypeInt.getType)(
       Block (
         Return(
           MultExpression(
@@ -33,7 +33,7 @@ class FunctionTest extends FlatSpec with Matchers {
     )
   }
   it should "throw a WrongParameterName exception when calling with a parameter not listed on the argument list" in {
-    val add5thenDouble = Function("num" -> TypeInt.getType)(
+    val add5thenDouble = Function(TypeInt.getType)("num" -> TypeInt.getType)(
       Block (
         Return(
           MultExpression(
@@ -52,7 +52,7 @@ class FunctionTest extends FlatSpec with Matchers {
     }
   }
   it should "throw a IncompleArgumentList when calling a function without suppling all of the required parameters" in {
-    val add5thenDouble = Function("num" -> TypeInt.getType)(
+    val add5thenDouble = Function(TypeInt.getType)("num" -> TypeInt.getType)(
       Block (
         Return(
           MultExpression(
@@ -72,7 +72,7 @@ class FunctionTest extends FlatSpec with Matchers {
   }
   it should "work with variables on a deeper layer" in {
     stk.addLayer()
-    val add7toXthenReturnX = Function()(
+    val add7toXthenReturnX = Function(TypeInt.getType)()(
       Block(
         SetVariable(
           "x" -> SumExpression(
@@ -96,7 +96,7 @@ class FunctionTest extends FlatSpec with Matchers {
     stk.clear()
   }
   it should "return a value correctly when used with correct parameters" in {
-    val add5thenDouble = Function("num" -> TypeInt.getType)(
+    val add5thenDouble = Function(TypeInt.getType)("num" -> TypeInt.getType)(
       Block (
         Return(
           MultExpression(
@@ -116,7 +116,7 @@ class FunctionTest extends FlatSpec with Matchers {
   }
   it should "work when created with the CreateFunction Command, and called with the CallFunction Expression" in {
     stk.addLayer
-    CreateFunction("add5thenDouble" -> Function("num" -> TypeInt.getType)(
+    CreateFunction("add5thenDouble" -> Function(TypeInt.getType)("num" -> TypeInt.getType)(
       Block (
         Return(
           MultExpression(
@@ -137,7 +137,7 @@ class FunctionTest extends FlatSpec with Matchers {
   }
   it should "work when created with a single command instead of a block as a body" in {
     stk.addLayer
-    CreateFunction("returnXPlus1", Function(){
+    CreateFunction("returnXPlus1", Function(TypeInt.getType)(){
         Return(SumExpression(GetVarValue("x"), Value(TypeInt(1))))
       }
     ).execute(stk)
@@ -149,7 +149,7 @@ class FunctionTest extends FlatSpec with Matchers {
   }
   it should "throw a IncompatibleTypeException when called with a parameter of a wrong type" in {
     stk.addLayer
-    CreateFunction("add5thenDouble" -> Function("num" -> TypeInt.getType)(
+    CreateFunction("add5thenDouble" -> Function(TypeInt.getType)("num" -> TypeInt.getType)(
       Block (
         Return(
           MultExpression(
@@ -162,7 +162,7 @@ class FunctionTest extends FlatSpec with Matchers {
         )
       )
     )).execute(stk)
-    CreateFunction("notGate" -> Function("a" -> TypeBool.getType)(
+    CreateFunction("notGate" -> Function(TypeBool.getType)("a" -> TypeBool.getType)(
       Return(
         NotGate(GetVarValue("a"))
       )
