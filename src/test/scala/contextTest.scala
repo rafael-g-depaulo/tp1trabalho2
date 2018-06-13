@@ -69,29 +69,30 @@ class ContextTest extends FlatSpec with Matchers {
     context.getVar("boolVar") should be (Value(TypeBool(true)))
   }
   
-  it should "be able to have functions created, and got from the top layer" in {
-    val context = new Context
-    context.addLayer
+  
+  // it should "be able to have functions created, and got from the top layer" in {
+  //   val context = new Context
+  //   context.addLayer
 
-    context.createFunc("add1", Function("num")(Block(
-      Return(
-        SumExpression(
-          GetVarValue("num"),
-          Value(TypeInt(1))
-        )
-      )
-    )))
-    context.createFunc("notGate" -> Function("x")(
-      Block(
-        Return(
-          NotGate(GetVarValue("x"))
-        )
-      )
-    ))
+  //   context.createFunc("add1", Function("num")(Block(
+  //     Return(
+  //       SumExpression(
+  //         GetVarValue("num"),
+  //         Value(TypeInt(1))
+  //       )
+  //     )
+  //   )))
+  //   context.createFunc("notGate" -> Function("x")(
+  //     Block(
+  //       Return(
+  //         NotGate(GetVarValue("x"))
+  //       )
+  //     )
+  //   ))
 
-    context.getFunc("add1")   .call(context)("num" -> Value(TypeInt(5)))   should be (Value(TypeInt(6)))
-    context.getFunc("notGate").call(context)("x" -> Value(TypeBool(true))) should be (Value(TypeBool(false)))
-  }
+  //   context.getFunc("add1")   .call(context)("num" -> Value(TypeInt(5)))   should be (Value(TypeInt(6)))
+  //   context.getFunc("notGate").call(context)("x" -> Value(TypeBool(true))) should be (Value(TypeBool(false)))
+  // }
 
   it should "be able to have procedures created, and got from the top layer" in {
     val context = new Context

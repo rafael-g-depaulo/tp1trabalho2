@@ -11,3 +11,5 @@ final case class WrongParameterName          (msg: String) extends Exception(msg
 final case class IncompleArgumentList        (msg: String) extends Exception(msg)
 final case class InvalidUseOfCommand         (msg: String) extends Exception(msg)
 final case class FunctionWithoutReturn       (msg: String) extends Exception(msg)
+final case class IncompatibleTypeException   (msg: String) extends Exception(msg)
+final case class ShoulNotHappenException     (msg: String) extends Exception(msg)

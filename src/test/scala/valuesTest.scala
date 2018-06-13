@@ -8,7 +8,7 @@ import types._
 import value._
 import expression.math._
 import context.Context
-import types.implicitConversionss
+// import types.implicitConversions
 
 class ValueTypesTest extends FlatSpec with Matchers {
 
