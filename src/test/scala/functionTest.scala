@@ -133,5 +133,18 @@ class FunctionTest extends FlatSpec with Matchers {
     CallFunction("add5thenDouble")("num" -> Value(TypeInt(0))) .eval(stk) should be (Value(TypeInt(10)))
     CallFunction("add5thenDouble")("num" -> Value(TypeInt(1))) .eval(stk) should be (Value(TypeInt(12)))
     CallFunction("add5thenDouble")("num" -> Value(TypeInt(-5))).eval(stk) should be (Value(TypeInt(0)))
+    stk.clear
+  }
+  it should "work when created with a single command instead of a block as a body" in {
+    stk.addLayer
+    CreateFunction("returnXPlus1", Function(){
+        Return(SumExpression(GetVarValue("x"), Value(TypeInt(1))))
+      }
+    ).execute(stk)
+
+    stk.createVar("x" -> Value(TypeInt(3)))
+    
+    CallFunction("returnXPlus1")() .eval(stk) should be (Value(TypeInt(4)))
+    stk.clear
   }
 }

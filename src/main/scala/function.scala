@@ -9,9 +9,10 @@ import types._
 import value._
 import command._
 import context._
+import ed.immutable.List
 
 class Function(
-  val body: Block,
+  val body: Command,
   _paramNames: String*
   ) {
   val paramNames = List(_paramNames: _*)
@@ -34,30 +35,17 @@ class Function(
     for (param <- paramNames)
       if (ctx.getVar(param) == UndefinedValue) throw IncompleArgumentList("lista de argumentos incompleta para procedimento")
 
-    // execute function until Return is found
-    val cmdIter = body.commands.getIterator()
-    // loops through all-but-last commands
-    do {
-      if (cmdIter.value.isReturn) {
-        val retVal = cmdIter.value.returnValue(ctx)
-        ctx.removeLayer()
-        return retVal
-      }
-      else { cmdIter.value.execute(ctx) }
-      if (cmdIter.hasNext) cmdIter.next
-    } while (cmdIter.hasNext)
-    // checks last command
-    if (cmdIter.value.isReturn) {
-      val retVal = cmdIter.value.returnValue(ctx)
-      ctx.removeLayer()
-      return retVal
+    // if body is a command, create a Block with it inside and treat it as the body
+    val bodyAsBlock: Block = body match {
+      case Block(cmds) => body.asInstanceOf[Block]
+      case _           => body.asBlock 
     }
-    // reached end and nothing was returned
-    else throw FunctionWithoutReturn("função chegou ao fim e nenhum valor foi retornado")
+
+    bodyAsBlock.execThenReturn(ctx)
   }
 }
 
 object Function {
-  def apply(body: Block, paramNames: String*): Function = new Function(body, paramNames: _*)
-  def apply(paramNames: String*)(body: Block): Function = new Function(body, paramNames: _*)
+  def apply(body: Command, paramNames: String*): Function = new Function(body, paramNames: _*)
+  def apply(paramNames: String*)(body: Command): Function = new Function(body, paramNames: _*)
 }
