@@ -9,7 +9,7 @@ import context.Context
 import scala.reflect.runtime.universe
 import scala.reflect.runtime.universe.{TypeTag, typeOf}
 
-abstract class Expression[+T <: Type] {
+abstract class Expression[+T <: Type](val retType: universe.Type) {
   def eval[T1 >: T <: Type](context: Context): Value[T1]
-  def getExprType[T1 >: T <: Type](implicit ev: TypeTag[T1]): universe.Type
+  // def getExprType[T1 >: T <: Type](implicit ev: TypeTag[T1]): universe.Type = retType
 }

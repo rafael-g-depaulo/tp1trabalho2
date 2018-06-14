@@ -9,15 +9,18 @@ import function._
 import value._
 import types._
 
+import scala.reflect.runtime.universe.{TypeTag, typeTag}
+import scala.reflect.runtime.universe
+
 class Context {
   var stack      = ed.immutable.List[Map[String, Value[Type]]]()
   var procdStack = ed.immutable.List[Map[String, Procedure]]()
-  var funcStack  = ed.immutable.List[Map[String, Function]]()
+  var funcStack  = ed.immutable.List[Map[String, Function[Type]]]()
 
   def addLayer() {
     stack      = HashTable[String, Value[Type]](50) :: stack
     procdStack = HashTable[String, Procedure](50) :: procdStack
-    funcStack  = HashTable[String, Function](50) :: funcStack
+    funcStack  = HashTable[String, Function[Type]](50) :: funcStack
   }
 
   def layerCount(): Int = stack.size
@@ -36,17 +39,18 @@ class Context {
     getThing[Value[Type]](varName, stack, "variavel")
   }
 
-  def getFunc(funcName: String): Function    = getThing[Function](funcName, funcStack, "funcao")
-  def getProcd(procdName: String): Procedure = getThing[Procedure](procdName, procdStack, "procedure")
+  def getFunc[T <: Type](funcName: String): Function[T]          = getThing[Function[Type]](funcName, funcStack, "funcao").asInstanceOf[Function[T]]
+  // def getFuncType(funcName: String): universe.Type = getThing[Function](funcName, funcStack, "funcao").fType
+  def getProcd(procdName: String): Procedure       = getThing[Procedure](procdName, procdStack, "procedure")
 
   def createVar[T <: Type](pair: (String, Value[T])) { createVar(pair._1, pair._2) }
   def createVar[T <: Type](name: String, value: Value[T] = UndefinedValue) {
     createThing[Value[T]](name, value, stack.asInstanceOf[ed.immutable.List[ed.contracts.Map[String, Value[T]]]], "Variavel")
   }
   
-  def createFunc(pair: (String, Function)) { createFunc(pair._1, pair._2) }
-  def createFunc(name: String, func: Function) {
-    createThing[Function](name, func, funcStack, "Funcao")
+  def createFunc(pair: (String, Function[Type])) { createFunc(pair._1, pair._2) }
+  def createFunc(name: String, func: Function[Type]) {
+    createThing[Function[Type]](name, func, funcStack, "Funcao")
   }
 
   def createProcd(pair: (String, Procedure)) { createProcd(pair._1, pair._2) }

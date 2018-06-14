@@ -5,13 +5,13 @@ import function._
 import value._
 import types._
 
-class CreateFunction(val funcName: String, val func: Function) extends Command {
+class CreateFunction[T <: Type](val funcName: String, val func: Function[T]) extends Command {
   def execute(ctx: Context) {
     ctx.createFunc(funcName, func)
   }
 }
 
 object CreateFunction {
-  def apply(pair: (String, Function)): CreateFunction = new CreateFunction(pair._1, pair._2)
-  def apply(funcName: String, func: Function): CreateFunction = new CreateFunction(funcName, func)
+  def apply[T <: Type](pair: (String, Function[T])): CreateFunction[T] = new CreateFunction[T](pair._1, pair._2)
+  def apply[T <: Type](funcName: String, func: Function[T]): CreateFunction[T] = new CreateFunction[T](funcName, func)
 }

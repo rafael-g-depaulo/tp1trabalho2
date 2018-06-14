@@ -17,17 +17,16 @@ import ed.immutable.List
 import scala.reflect.runtime.universe.{TypeTag, typeTag, typeOf}
 import scala.reflect.runtime.universe
 
-class Function(
-  val fType: universe.Type,
+class Function[+T <: Type](
   val body: Command,
-  _params: (String, universe.Type)*
+  // val ev: TypeTag[T],
+  _params: (String, universe.Type)*,
   )
   {
   val paramNames: List[String] = List(_params.map(_._1): _*)
   val paramTypes = HashTable[String, universe.Type](50, _params.map(p => (p._1, p._2)): _*)
-  def call(ctx: Context)(params: (String, Expression[Type])*): Value[Type] = {
+  def call[T1 >: T <: Type : TypeTag](ctx: Context)(params: (String, Expression[Type])*): Value[Type] = {
     ctx.addLayer()
-    var retVal: Value[Type] = UndefinedValue
 
     // creating local parameter variables
     paramNames foreach { ctx.createVar((_: String), UndefinedValue)}
@@ -40,21 +39,14 @@ class Function(
           case None => throw WrongParameterName("parametro inicializado com nome invalido")
         // else
           case Some(tt) => tt match {
-          // if type was the same as expected
-            case t if t =:= param._2.getExprType => ctx.setVar(param._1, param._2.eval(ctx))// okay
-            case _                         => throw IncompatibleTypeException("Tipo incompativel. Esperava: "+tt+". Recebido: "+param._2.getExprType)
+          // if type was the same as expected, set variable
+            case t if t =:= param._2.retType => ctx.setVar(param._1, param._2.eval(ctx))
+          // if not, throw exception
+            case _ => throw IncompatibleTypeException("Tipo incompativel. Esperava: "+tt+". Recebido: "+param._2+", tipo:"+param._2.retType)
           }
         }
       }
     }
-
-    // setting them
-    // try {
-    //   for (param <- params)
-    //     ctx.setVar(param._1, param._2.eval(ctx))
-    // } catch {
-    //   case err: InexistentThing => throw WrongParameterName("parametro inicializado com nome invalido")
-    // }
 
     // if there are Undefined parameters, throw exception
     for (param <- paramNames)
@@ -66,11 +58,14 @@ class Function(
       case _           => body.asBlock 
     }
 
-    bodyAsBlock.execThenReturn(ctx)
+    val retVal = bodyAsBlock.execThenReturn(ctx)
+    if (!(retVal.retType =:= typeOf[T1]))
+      throw IncompatibleTypeException("Tipo de retorno de funcao. Era pra retornar: "+typeOf[T1]+". Retornou: "+retVal.retType)
+    retVal
   }
 }
 
 object Function {
   // def apply(body: Command, params: (String, Type)*): Function = new Function(body, params: _*)
-  def apply(fType: universe.Type)(params: (String, universe.Type)*)(body: Command): Function = new Function(fType, body, params: _*)
+  def apply[T <: Type](params: (String, universe.Type)*)(body: Command)(implicit ev: TypeTag[T]): Function[T] = new Function[T](body, params: _*)
 }

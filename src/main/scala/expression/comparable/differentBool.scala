@@ -14,10 +14,10 @@ import scala.reflect.runtime.universe.{TypeTag, typeOf}
  * @author Lucas V. M. Pinheiro
  */
 
-case class DifferentBool(_lhs: Expression[TypeBool], _rhs: Expression[TypeBool]) extends BinExpression[TypeBool, TypeBool, TypeBool](_lhs, _rhs) {
+case class DifferentBool(_lhs: Expression[TypeBool], _rhs: Expression[TypeBool]) extends BinExpression[TypeBool, TypeBool, TypeBool](_lhs, _rhs, typeOf[TypeInt]) {
 	def eval[T1 >: TypeBool <: Type](ctx: Context): Value [T1] = Value[TypeBool](TypeBool(lhs.eval(ctx).innerValue() != rhs.eval(ctx).innerValue())).asInstanceOf[Value [T1]]
 	
-  def getExprType[T1 >: TypeBool <: Type](implicit ev: TypeTag[T1]): universe.Type = typeOf[TypeBool]
+  // def getExprType[T1 >: TypeBool <: Type](implicit ev: TypeTag[T1]): universe.Type = typeOf[TypeBool]
 }
 
 object DifferentBool {

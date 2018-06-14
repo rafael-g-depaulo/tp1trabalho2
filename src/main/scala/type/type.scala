@@ -29,6 +29,7 @@ case class TypeBool(val value: Boolean) extends TypeUndef {
 
 object TypeInt {
   def getType(): universe.Type = typeOf[TypeInt]
+  def apply: universe.Type = getType()
 }
 object TypeBool {
   def getType(): universe.Type = typeOf[TypeBool]
