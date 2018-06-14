@@ -2,6 +2,7 @@ import org.scalatest.{exceptions => _, _}
 import ed.exceptions._
 
 import types._
+import types.ImplicitTyping._
 import value._
 import command._
 import function._
@@ -18,7 +19,7 @@ class FunctionTest extends FlatSpec with Matchers {
    val stk: Context = new Context
 
   "Function" should "be able to be created" in {
-    val add5thenDouble = Function[TypeInt]("num" -> TypeInt.getType)(
+    val add5thenDouble = Function[TypeInt]("num" -> TypeInt)(
       Block (
         Return(
           MultExpression(
@@ -33,7 +34,7 @@ class FunctionTest extends FlatSpec with Matchers {
     )
   }
   it should "throw a WrongParameterName exception when calling with a parameter not listed on the argument list" in {
-    val add5thenDouble = Function[TypeInt]("num" -> TypeInt.getType)(
+    val add5thenDouble = Function[TypeInt]("num" -> TypeInt)(
       Block (
         Return(
           MultExpression(
@@ -52,7 +53,7 @@ class FunctionTest extends FlatSpec with Matchers {
     }
   }
   it should "throw a IncompleArgumentList when calling a function without suppling all of the required parameters" in {
-    val add5thenDouble = Function[TypeInt]("num" -> TypeInt.getType)(
+    val add5thenDouble = Function[TypeInt]("num" -> TypeInt)(
       Block (
         Return(
           MultExpression(
@@ -96,7 +97,7 @@ class FunctionTest extends FlatSpec with Matchers {
     stk.clear()
   }
   it should "return a value correctly when used with correct parameters" in {
-    val add5thenDouble = Function[TypeInt]("num" -> TypeInt.getType)(
+    val add5thenDouble = Function[TypeInt]("num" -> TypeInt)(
       Block (
         Return(
           MultExpression(
@@ -116,7 +117,7 @@ class FunctionTest extends FlatSpec with Matchers {
   }
   it should "work when created with the CreateFunction Command, and called with the CallFunction Expression" in {
     stk.addLayer
-    CreateFunction("add5thenDouble" -> Function[TypeInt]("num" -> TypeInt.getType)(
+    CreateFunction("add5thenDouble" -> Function[TypeInt]("num" -> TypeInt)(
       Block (
         Return(
           MultExpression(
@@ -149,7 +150,7 @@ class FunctionTest extends FlatSpec with Matchers {
   }
   it should "throw a IncompatibleTypeException when called with a parameter of a wrong type" in {
     stk.addLayer
-    CreateFunction("add5thenDouble" -> Function[TypeInt]("num" -> TypeInt.getType)(
+    CreateFunction("add5thenDouble" -> Function[TypeInt]("num" -> TypeInt /*MyImplicitTyping.typeInt2univType(TypeInt)*/)(
       Block (
         Return(
           MultExpression(
@@ -162,7 +163,7 @@ class FunctionTest extends FlatSpec with Matchers {
         )
       )
     )).execute(stk)
-    CreateFunction("notGate" -> Function[TypeBool]("a" -> TypeBool.getType)(
+    CreateFunction("notGate" -> Function[TypeBool]("a" -> TypeBool)(
       Return(
         NotGate(GetVarValue("a"))
       )
@@ -180,5 +181,23 @@ class FunctionTest extends FlatSpec with Matchers {
 
     stk.clear
   }
-  // it should "work recursively"
+  // it should "work recursively" in {
+  //   stk.addLayer
+  //   CreateFunction("fibonaci" -> Function[TypeInt]("x" -> TypeInt){
+  //     IfThenElse (LessEqual(GetVarValue("x"), Value(TypeInt(0)))) (
+  //         Return(Value(TypeInt(1)))
+  //       ) (
+  //         Return {
+  //           SumExpression(
+  //             CallFunction("fibonaci")("x" -> SubExpression(GetVarValue("x"), Value(TypeInt(-1)))),
+  //             CallFunction("fibonaci")("x" -> SubExpression(GetVarValue("x"), Value(TypeInt(-2))))
+  //           )
+  //         }
+  //       )
+  //   }).execute(stk)
+    
+  //   CallFunction("fibonaci")("x" -> Value(TypeInt(0))).eval(stk) should be (Value(TypeInt(1)))
+    
+  //   stk.clear
+  // }
 }

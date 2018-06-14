@@ -60,7 +60,7 @@ class Function[+T <: Type](
 
     val retVal = bodyAsBlock.execThenReturn(ctx)
     if (!(retVal.retType =:= typeOf[T1]))
-      throw IncompatibleTypeException("Tipo de retorno de funcao. Era pra retornar: "+typeOf[T1]+". Retornou: "+retVal.retType)
+      throw IncompatibleTypeException("Tipo de retorno de funcao errado. Era pra retornar: "+typeOf[T1]+". Retornou: "+retVal.retType)
     retVal
   }
 }

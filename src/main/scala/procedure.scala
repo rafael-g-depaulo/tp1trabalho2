@@ -8,7 +8,7 @@ import command._
 import context._
 
 class Procedure(
-  val body: Block,
+  val body: Command,
   _paramNames: String*
 ) {
   val paramNames = List(_paramNames: _*)
@@ -39,6 +39,6 @@ class Procedure(
 }
 
 object Procedure {
-  def apply(body: Block, paramNames: String*): Procedure = new Procedure(body, paramNames: _*)
-  def apply(paramNames: String*)(body: Block): Procedure = new Procedure(body, paramNames: _*)
+  def apply(body: Command, paramNames: String*): Procedure = new Procedure(body, paramNames: _*)
+  def apply(paramNames: String*)(body: Command): Procedure = new Procedure(body, paramNames: _*)
 }

@@ -5,10 +5,12 @@ import expression._
 import types._
 import value._
 
+import scala.reflect.ClassTag
+
 class IfThenElse(
   private val cond: Expression[TypeBool],
-  private val blcIf: Block,
-  private val blcElse: Block) extends Command {
+  private val blcIf: Command,
+  private val blcElse: Command) extends Command {
 
   def execute(ctx: Context) {
     ctx.addLayer
@@ -21,5 +23,6 @@ class IfThenElse(
 }
 
 object IfThenElse {
-  def apply(cond: Expression[TypeBool], blc: Block, blcElse: Block): IfThenElse = new IfThenElse(cond, blc, blcElse)
+  def apply(cond: Expression[TypeBool], blc: Command, blcElse: Command): IfThenElse = new IfThenElse(cond, blc, blcElse)
+  def apply[A : ClassTag](cond: Expression[TypeBool])(blc: Command)(blcElse: Command): IfThenElse = new IfThenElse(cond, blc, blcElse)
 }

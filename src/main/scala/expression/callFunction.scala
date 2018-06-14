@@ -17,5 +17,5 @@ class CallFunction[T <: Type](val funcName: String, val ev: TypeTag[T], val _par
 }
 
 object CallFunction {
-    def apply[T <: Type](funcName: String)(params: (String, Value[Type])*)(implicit ev: TypeTag[T]): CallFunction[T] = new CallFunction[T](funcName, ev, params: _*)
+    def apply[T <: Type](funcName: String)(params: (String, Expression[Type])*)(implicit ev: TypeTag[T]): CallFunction[T] = new CallFunction[T](funcName, ev, params: _*)
 }

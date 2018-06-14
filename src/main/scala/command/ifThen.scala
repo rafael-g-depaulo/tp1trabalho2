@@ -7,7 +7,7 @@ import value._
 
 class IfThen(
   private val cond: Expression[TypeBool],
-  private val blc: Block) extends Command {
+  private val blc: Command) extends Command {
 
   def execute(ctx: Context) {
     if (cond.eval(ctx) == Value(TypeBool(true))) {
@@ -19,5 +19,5 @@ class IfThen(
 }
 
 object IfThen {
-  def apply(cond: Expression[TypeBool], blc: Block): IfThen = new IfThen(cond, blc)
+  def apply(cond: Expression[TypeBool], blc: Command): IfThen = new IfThen(cond, blc)
 }
