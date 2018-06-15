@@ -5,8 +5,9 @@ import value._
 import types._
 
 class CreateVariable(val varName: String, val varValue: Value[Type]) extends Command {
-  def execute(ctx: Context) {
+  def execute(ctx: Context): Option[Value[Type]] = {
     ctx.createVar(varName, varValue)
+    None
   }
 }
 

@@ -6,8 +6,9 @@ import value._
 import types._
 
 class CreateFunction[T <: Type](val funcName: String, val func: Function[T]) extends Command {
-  def execute(ctx: Context) {
+  def execute(ctx: Context): Option[Value[Type]] = {
     ctx.createFunc(funcName, func)
+    None
   }
 }
 

@@ -49,19 +49,14 @@ class Function[+T <: Type](
     }
 
     // if there are Undefined parameters, throw exception
-    for (param <- paramNames)
+    for (param <- paramNames) {
       if (ctx.getVar(param) == UndefinedValue) throw IncompleArgumentList("lista de argumentos incompleta para procedimento")
-
-    // if body is a command, create a Block with it inside and treat it as the body
-    val bodyAsBlock: Block = body match {
-      case Block(cmds) => body.asInstanceOf[Block]
-      case _           => body.asBlock 
     }
 
-    val retVal = bodyAsBlock.execThenReturn(ctx)
-    if (!(retVal.retType =:= typeOf[T1]))
-      throw IncompatibleTypeException("Tipo de retorno de funcao errado. Era pra retornar: "+typeOf[T1]+". Retornou: "+retVal.retType)
-    retVal
+    body.execute(ctx) match {
+      case None        => ctx.removeLayer(); throw FunctionWithoutReturn("funçao não retornou nada")
+      case Some(value) => ctx.removeLayer(); value
+    }
   }
 }
 

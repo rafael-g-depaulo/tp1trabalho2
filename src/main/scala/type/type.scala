@@ -9,11 +9,11 @@ abstract class Type
 
 abstract class TypeUndef extends Type
 
-case class TypeInt(val value: Int) extends TypeUndef {
+case class TypeInt(val value: Int) extends Type {
   def apply(): Int = value
 }
 
-case class TypeBool(val value: Boolean) extends TypeUndef {
+case class TypeBool(val value: Boolean) extends Type {
   def apply(): Boolean = value
 }
 

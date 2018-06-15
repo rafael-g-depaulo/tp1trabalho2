@@ -9,7 +9,7 @@ import ed.mutable._
 import scala.reflect.ClassTag
 
 class CallProcedure(val procdName: String, val params: (String, Expression[Type])*) extends Command {
-  def execute(context: Context) { context.getProcd(procdName).call(context)(params: _*) }
+  def execute(context: Context): Option[Value[Type]] = { context.getProcd(procdName).call(context)(params: _*); None }
 }
 
 object CallProcedure {

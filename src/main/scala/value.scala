@@ -33,7 +33,6 @@ object Value {
 }
 
 case object UndefinedValue extends Value[Nothing](typeOf[Nothing]) {
-  // def getExprType[T1 >: Nothing <: Type](implicit ev: TypeTag[T1]): universe.Type = throw AccessingUndefinedException("tentando acessar o tipo de Undefined") 
   override def innerValue: Nothing                                          = throw AccessingUndefinedException("tentando pegar valor de Undefined") 
-  override def eval[T1 >: Nothing <: Type](context: Context): Value[T1]     = throw AccessingUndefinedException("tentando avaliar(evaluate) Undefined") 
+  // override def eval[T1 >: Nothing <: Type](context: Context): Value[T1]     = throw AccessingUndefinedException("tentando avaliar(evaluate) Undefined") 
 }

@@ -4,6 +4,7 @@ import ed.mutable._
 import ed.immutable._
 import ed.contracts._
 import exceptions._
+import expression._
 import procedure._
 import function._
 import value._
@@ -35,17 +36,16 @@ class Context {
       throw StackUnderflowException("Undeflow no Stack de contexto")
   }
 
-  def getVar(varName: String): Value[Type] = {
-    getThing[Value[Type]](varName, stack, "variavel")
+  def getVar[T <: Type](varName: String): Value[T] = {
+    getThing[Value[Type]](varName, stack, "variavel").asInstanceOf[Value[T]]
   }
 
-  def getFunc[T <: Type](funcName: String): Function[T]          = getThing[Function[Type]](funcName, funcStack, "funcao").asInstanceOf[Function[T]]
-  // def getFuncType(funcName: String): universe.Type = getThing[Function](funcName, funcStack, "funcao").fType
-  def getProcd(procdName: String): Procedure       = getThing[Procedure](procdName, procdStack, "procedure")
+  def getFunc[T <: Type](funcName: String): Function[T] = getThing[Function[Type]](funcName, funcStack, "funcao").asInstanceOf[Function[T]]
+  def getProcd(procdName: String): Procedure            = getThing[Procedure](procdName, procdStack, "procedure")
 
-  def createVar[T <: Type](pair: (String, Value[T])) { createVar(pair._1, pair._2) }
-  def createVar[T <: Type](name: String, value: Value[T] = UndefinedValue) {
-    createThing[Value[T]](name, value, stack.asInstanceOf[ed.immutable.List[ed.contracts.Map[String, Value[T]]]], "Variavel")
+  def createVar[T <: Type](pair: (String, Expression[T])) { createVar(pair._1, pair._2) }
+  def createVar[T <: Type](name: String, value: Expression[T] = UndefinedValue) {
+    createThing[Value[T]](name, value.eval(this), stack.asInstanceOf[ed.immutable.List[ed.contracts.Map[String, Value[T]]]], "Variavel")
   }
   
   def createFunc(pair: (String, Function[Type])) { createFunc(pair._1, pair._2) }
@@ -89,8 +89,8 @@ class Context {
     }
   }
 
-  def setVar(pair: (String, Value[Type])) { setVar(pair._1, pair._2) }
-  def setVar(name: String, value: Value[Type]) {
+  def setVar(pair: (String, Expression[Type])) { setVar(pair._1, pair._2) }
+  def setVar(name: String, value: Expression[Type]) {
     if (stack.isEmpty)
       throw EmptyContextException("Contexto vazio")
     
@@ -98,14 +98,14 @@ class Context {
     val myIte = stack.getIterator
     while (myIte.hasNext) {
       if (myIte.value.hasKey(name)) {
-        myIte.value.insert(name -> value)
+        myIte.value.insert(name -> value.eval(this))
         return
       }
       else myIte.next()
     }
 
     if (myIte.value.hasKey(name))
-      myIte.value.insert(name -> value)
+      myIte.value.insert(name -> value.eval(this))
     // checou no stack inteiro e não achou.
     else
       throw InexistentThing("tentando mudar valor de variável não criada")

@@ -12,13 +12,20 @@ class IfThenElse(
   private val blcIf: Command,
   private val blcElse: Command) extends Command {
 
-  def execute(ctx: Context) {
+  def execute(ctx: Context): Option[Value[Type]] = {
     ctx.addLayer
-    if (cond.eval(ctx) == Value(TypeBool(true)))
-      blcIf.execute(ctx)
-    else
-      blcElse.execute(ctx)
-    ctx.removeLayer
+    if (cond.eval(ctx) == Value(TypeBool(true))) {
+      blcIf.execute(ctx) match {
+        case None        => ctx.removeLayer; None
+        case Some(value) => ctx.removeLayer; Some(value)
+      }
+    }
+    else {
+      blcElse.execute(ctx) match {
+        case None        => ctx.removeLayer; None
+        case Some(value) => ctx.removeLayer; Some(value)
+      }
+    }
   }
 }
 

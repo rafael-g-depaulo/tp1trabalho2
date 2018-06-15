@@ -69,27 +69,7 @@ class ValueTypesTest extends FlatSpec with Matchers {
     var intValue:  Value[TypeInt]  = UndefinedValue
     var boolValue: Value[TypeBool] = UndefinedValue
  
-    // boolValue = Value(TypeInt(5))        // Essas duas linhas de código causam erro
+    // boolValue = Value(TypeInt(5))        // Essas duas linhas de código causam erro em compilacao
     // intValue = Value(TypeBool(true))     // "type mismatch" se forem descomentadas
-  }
-  it should "throw an AccessingUndefinedException when trying to evaluate an Undefined value, or access it's innerValue" in {
-    val intValue:  Value[TypeInt]  = UndefinedValue
-    val boolValue: Value[TypeBool] = UndefinedValue
-
-    intercept[AccessingUndefinedException] {
-      intValue.innerValue()
-    }
-
-    intercept[AccessingUndefinedException] {
-      boolValue.innerValue()
-    }
-
-    intercept[AccessingUndefinedException] {
-      intValue.eval(stk)
-    }
-
-    intercept[AccessingUndefinedException] {
-      boolValue.eval(stk)
-    }
   }
 }

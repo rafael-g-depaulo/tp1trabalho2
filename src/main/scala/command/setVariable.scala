@@ -6,8 +6,9 @@ import value._
 import types._
 
 class SetVariable(val varName: String, val varValue: Expression[Type]) extends Command {
-  def execute(ctx: Context) {
+  def execute(ctx: Context): Option[Value[Type]] = {
     ctx.setVar(varName, varValue.eval(ctx))
+    None
   }
 }
 

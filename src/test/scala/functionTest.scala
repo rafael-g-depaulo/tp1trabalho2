@@ -181,23 +181,49 @@ class FunctionTest extends FlatSpec with Matchers {
 
     stk.clear
   }
-  // it should "work recursively" in {
-  //   stk.addLayer
-  //   CreateFunction("fibonaci" -> Function[TypeInt]("x" -> TypeInt){
-  //     IfThenElse (LessEqual(GetVarValue("x"), Value(TypeInt(0)))) (
-  //         Return(Value(TypeInt(1)))
-  //       ) (
-  //         Return {
-  //           SumExpression(
-  //             CallFunction("fibonaci")("x" -> SubExpression(GetVarValue("x"), Value(TypeInt(-1)))),
-  //             CallFunction("fibonaci")("x" -> SubExpression(GetVarValue("x"), Value(TypeInt(-2))))
-  //           )
-  //         }
-  //       )
-  //   }).execute(stk)
+  it should "work recursively" in {
+    stk.addLayer
+    CreateFunction("fibonaci" -> Function[TypeInt]("x" -> TypeInt){
+      IfThenElse (LessEqual(GetVarValue[TypeInt]("x"), Value(TypeInt(1)))) (
+          Return(Value(TypeInt(1)))
+        ) (
+          Return {
+            SumExpression(
+              CallFunction[TypeInt]("fibonaci")("x" -> SubExpression(GetVarValue[TypeInt]("x"), Value(TypeInt(1)))),
+              CallFunction[TypeInt]("fibonaci")("x" -> SubExpression(GetVarValue[TypeInt]("x"), Value(TypeInt(2))))
+            )
+          }
+        )
+    }).execute(stk)
+
+    CreateFunction("!" -> Function[TypeInt]("num" -> TypeInt) (
+      IfThenElse (LessEqual(GetVarValue[TypeInt]("num"), Value(TypeInt(1)))) {
+        Return(
+          Value(TypeInt(1))
+        )
+      } {
+        Return(
+          MultExpression(
+            GetVarValue[TypeInt]("num"),
+            CallFunction[TypeInt]("!")("num" -> SubExpression(GetVarValue[TypeInt]("num"), Value(TypeInt(1))))
+          )
+        )
+      }
+    )).execute(stk)
     
-  //   CallFunction("fibonaci")("x" -> Value(TypeInt(0))).eval(stk) should be (Value(TypeInt(1)))
+    CallFunction[TypeInt]("!")("num" -> Value(TypeInt(0))).eval(stk) should be (Value(TypeInt(1)))
+    CallFunction[TypeInt]("!")("num" -> Value(TypeInt(1))).eval(stk) should be (Value(TypeInt(1)))
+    CallFunction[TypeInt]("!")("num" -> Value(TypeInt(2))).eval(stk) should be (Value(TypeInt(2)))
+    CallFunction[TypeInt]("!")("num" -> Value(TypeInt(3))).eval(stk) should be (Value(TypeInt(6)))
+    CallFunction[TypeInt]("!")("num" -> Value(TypeInt(4))).eval(stk) should be (Value(TypeInt(24)))
+
+    CallFunction[TypeInt]("fibonaci")("x" -> Value(TypeInt(0))).eval(stk) should be (Value(TypeInt(1)))
+    CallFunction[TypeInt]("fibonaci")("x" -> Value(TypeInt(1))).eval(stk) should be (Value(TypeInt(1)))
+    CallFunction[TypeInt]("fibonaci")("x" -> Value(TypeInt(2))).eval(stk) should be (Value(TypeInt(2)))
+    CallFunction[TypeInt]("fibonaci")("x" -> Value(TypeInt(3))).eval(stk) should be (Value(TypeInt(3)))
+    CallFunction[TypeInt]("fibonaci")("x" -> Value(TypeInt(4))).eval(stk) should be (Value(TypeInt(5)))
+    CallFunction[TypeInt]("fibonaci")("x" -> Value(TypeInt(5))).eval(stk) should be (Value(TypeInt(8)))
     
-  //   stk.clear
-  // }
+    stk.clear
+  }
 }

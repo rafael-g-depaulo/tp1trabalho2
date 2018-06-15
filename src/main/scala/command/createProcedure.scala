@@ -6,8 +6,9 @@ import value._
 import types._
 
 class CreateProcedure(val funcName: String, val func: Procedure) extends Command {
-  def execute(ctx: Context) {
+  def execute(ctx: Context): Option[Value[Type]] = {
     ctx.createProcd(funcName, func)
+    None
   }
 }
 
