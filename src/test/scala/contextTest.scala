@@ -2,10 +2,12 @@ import org.scalatest.{exceptions => _, _}
 import ed.exceptions._
 
 import types._
+import types.ImplicitTyping._
 import value._
 import function._
 import procedure._
 import context._
+import context.Type2Either._
 import exceptions.{InexistentThing, InvalidName}
 import expression._
 import expression.math._
@@ -60,13 +62,13 @@ class ContextTest extends FlatSpec with Matchers {
     context.addLayer
 
     context.createVar[TypeInt]("intVar", UndefinedValue)
-    context.createVar("boolVar" -> Value(TypeBool(false)))
+    context.createVar[TypeBool]("boolVar" -> Value(TypeBool(false)))
 
     context.setVar("intVar", Value(TypeInt(4)))
     context.setVar("boolVar" -> Value(TypeBool(true)))
 
-    context.getVar("intVar") should be (Value(TypeInt(4)))
-    context.getVar("boolVar") should be (Value(TypeBool(true)))
+    context.getVar[TypeInt]("intVar") should be (Value(TypeInt(4)))
+    context.getVar[TypeBool]("boolVar") should be (Value(TypeBool(true)))
   }
   
   
@@ -74,23 +76,23 @@ class ContextTest extends FlatSpec with Matchers {
     val context = new Context
     context.addLayer
 
-    context.createFunc("add1", Function[TypeInt]("num" -> TypeInt.getType)(Block(
+    context.createFunc("add1", Function[TypeInt]("num" -> TypeInt)(Block(
       Return(
         SumExpression(
-          GetVarValue("num"),
+          GetVarValue[TypeInt]("num"),
           Value(TypeInt(1))
         )
       )
     )))
-    context.createFunc("notGate" -> Function[TypeBool]("x" -> TypeBool.getType)(
+    context.createFunc("notGate" -> Function[TypeBool]("x" -> TypeBool)(
       Block(
         Return(
-          NotGate(GetVarValue("x"))
+          NotGate(GetVarValue[TypeBool]("x"))
         )
       )
     ))
 
-    context.getFunc("add1")   .call[TypeInt](context)("num" -> Value(TypeInt(5)))   should be (Value(TypeInt(6)))
+    context.getFunc("add1")   .call[TypeInt](context)("num" -> Value(TypeInt(7)))   should be (Value(TypeInt(8)))
     context.getFunc("notGate").call[TypeBool](context)("x" -> Value(TypeBool(true))) should be (Value(TypeBool(false)))
   }
 
@@ -102,7 +104,7 @@ class ContextTest extends FlatSpec with Matchers {
     context.createProcd("myProc" -> Procedure()(Block(SetVariable("x" -> Value(TypeBool(true))))))
     context.getProcd("myProc").call(context)()
 
-    context.getVar("x") should be (Value(TypeBool(true)))
+    context.getVar[TypeBool]("x") should be (Value(TypeBool(true)))
   }
 
   it should "be able to have variables initialized with UndefinedValue" in {
@@ -116,7 +118,7 @@ class ContextTest extends FlatSpec with Matchers {
     val context = new Context
     context.addLayer
 
-    context.createVar  ("5" -> Value(TypeInt(5)))
+    context.createVar[TypeInt]  ("5" -> Value(TypeInt(5)))
     context.createFunc ("5"  -> Function[TypeInt]()(Block(Return(Value(TypeInt(5))))))
     context.createProcd("5" -> Procedure(Block()))
 
@@ -138,7 +140,7 @@ class ContextTest extends FlatSpec with Matchers {
     context.addLayer
     context.addLayer
 
-    context.getVar("intVar") should be (Value(TypeInt(5)))
+    context.getVar[TypeInt]("intVar") should be (Value(TypeInt(5)))
 
   }
   it should "throw a InvalidName exception when creating 2 variables, functions or procedures in the same layer with the same name" in {
@@ -163,11 +165,11 @@ class ContextTest extends FlatSpec with Matchers {
   it should "return the newest layer's variable when searching for a variable whose name is shared with another variable in a deeper layer" in {
     val context = new Context
     context.addLayer
-    context.createVar("myBoolean" -> Value(TypeBool(true)))
+    context.createVar[TypeBool]("myBoolean" -> Value(TypeBool(true)))
     context.addLayer
-    context.createVar("myBoolean" -> Value(TypeBool(false)))
+    context.createVar[TypeBool]("myBoolean" -> Value(TypeBool(false)))
 
-    context.getVar("myBoolean") should be (Value(TypeBool(false)))
+    context.getVar[TypeBool]("myBoolean") should be (Value(TypeBool(false)))
   }
 
   it should "work with the GetVarValue Expression, and the CreateVariable and SetVariable Commands" in {
@@ -178,20 +180,20 @@ class ContextTest extends FlatSpec with Matchers {
     intercept[InexistentThing] {
       context.getVar("x")
     }
-    CreateVariable("x", Value(TypeInt(5))).execute(context)
+    CreateVariable[TypeInt]("x", Value(TypeInt(5))).execute(context)
     
     // a expressão GetVarValue deve jogar uma exceção se avaliada em um contexto sem a variável
     intercept[InexistentThing] {
       val ctx = new Context
       ctx.addLayer
-      GetVarValue("x").eval(ctx)
+      GetVarValue[TypeInt]("x").eval(ctx)
     }
 
     // usando o contexto que contém uma variavel com o mesmo nome, o valor correto é retornado ao avaliar a Expressão
-    GetVarValue("x").eval(context) should be (Value(TypeInt(5)))
+    GetVarValue[TypeInt]("x").eval(context) should be (Value(TypeInt(5)))
 
     // e mesmo estando em outra camada, podemos alterar o valor de x
-    SetVariable("x" -> Value(TypeInt(10))).execute(context)
-    GetVarValue("x").eval(context) should be (Value(TypeInt(10)))
+    SetVariable[TypeInt]("x" -> Value(TypeInt(10))).execute(context)
+    GetVarValue[TypeInt]("x").eval(context) should be (Value(TypeInt(10)))
   }
 }

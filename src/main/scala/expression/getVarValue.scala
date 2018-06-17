@@ -9,7 +9,7 @@ import scala.reflect.runtime.universe
 import scala.reflect.runtime.universe.{TypeTag, typeOf}
 
 class GetVarValue[+T <: Type](val varName: String, ev: TypeTag[T]) extends Expression[T](ev.tpe) {
-  def eval[T1 >: T <: Type](context: Context): Value[T1] = context.getVar(varName).asInstanceOf[Value[T1]]	
+  def eval[T1 >: T <: Type](context: Context): Value[T1] = context.getVar[T](varName)(ev).asInstanceOf[Value[T1]]	
   override def toString: String = "GetVarValue("+varName+")"
 }
 

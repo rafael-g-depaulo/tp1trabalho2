@@ -77,22 +77,22 @@ class FunctionTest extends FlatSpec with Matchers {
       Block(
         SetVariable(
           "x" -> SumExpression(
-            GetVarValue("x"),
+            GetVarValue[TypeInt]("x"),
             Value(TypeInt(7))
           )
         ),
-        Return(GetVarValue("x"))
+        Return(GetVarValue[TypeInt]("x"))
       )
     )
 
-    stk.createVar("x" -> Value(TypeInt(0)))
-    GetVarValue("x").eval(stk) should be (Value(TypeInt(0)))
+    stk.createVar[TypeInt]("x" -> Value(TypeInt(0)))
+    GetVarValue[TypeInt]("x").eval(stk) should be (Value(TypeInt(0)))
 
     add7toXthenReturnX.call(stk)() should be (Value(TypeInt(7)))
-    GetVarValue("x").eval(stk) should be (Value(TypeInt(7)))
+    GetVarValue[TypeInt]("x").eval(stk) should be (Value(TypeInt(7)))
 
     add7toXthenReturnX.call(stk)() should be (Value(TypeInt(14)))
-    GetVarValue("x").eval(stk) should be (Value(TypeInt(14)))
+    GetVarValue[TypeInt]("x").eval(stk) should be (Value(TypeInt(14)))
 
     stk.clear()
   }
@@ -102,7 +102,7 @@ class FunctionTest extends FlatSpec with Matchers {
         Return(
           MultExpression(
             SumExpression(
-              GetVarValue("num"),
+              GetVarValue[TypeInt]("num"),
               Value(TypeInt(5))
             ),
             Value(TypeInt(2))
@@ -122,7 +122,7 @@ class FunctionTest extends FlatSpec with Matchers {
         Return(
           MultExpression(
             SumExpression(
-              GetVarValue("num"),
+              GetVarValue[TypeInt]("num"),
               Value(TypeInt(5))
             ),
             Value(TypeInt(2))
@@ -139,11 +139,11 @@ class FunctionTest extends FlatSpec with Matchers {
   it should "work when created with a single command instead of a block as a body" in {
     stk.addLayer
     CreateFunction("returnXPlus1", Function[TypeInt](){
-        Return(SumExpression(GetVarValue("x"), Value(TypeInt(1))))
+        Return(SumExpression(GetVarValue[TypeInt]("x"), Value(TypeInt(1))))
       }
     ).execute(stk)
 
-    stk.createVar("x" -> Value(TypeInt(3)))
+    stk.createVar[TypeInt]("x" -> Value(TypeInt(3)))
     
     CallFunction[TypeInt]("returnXPlus1")() .eval(stk) should be (Value(TypeInt(4)))
     stk.clear
@@ -155,7 +155,7 @@ class FunctionTest extends FlatSpec with Matchers {
         Return(
           MultExpression(
             SumExpression(
-              GetVarValue("num"),
+              GetVarValue[TypeInt]("num"),
               Value(TypeInt(5))
             ),
             Value(TypeInt(2))
@@ -165,7 +165,7 @@ class FunctionTest extends FlatSpec with Matchers {
     )).execute(stk)
     CreateFunction("notGate" -> Function[TypeBool]("a" -> TypeBool)(
       Return(
-        NotGate(GetVarValue("a"))
+        NotGate(GetVarValue[TypeBool]("a"))
       )
     )).execute(stk)
 
